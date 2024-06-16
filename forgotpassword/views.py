@@ -7,8 +7,6 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 import socket
 from .send_mail import SendMail
-
-
 def generate_and_send_otp(user, email):
     token_generator = default_token_generator
     uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
@@ -19,7 +17,6 @@ def generate_and_send_otp(user, email):
         'email': email,
         'otp': otp
     }
-
     try:
         mailer = SendMail(mail_data)
         mailer.sendMail()

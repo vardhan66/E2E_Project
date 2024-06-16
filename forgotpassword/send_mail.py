@@ -1,45 +1,36 @@
 import smtplib
 from email.message import EmailMessage
 import ssl
+# from .models import StudentModel, CounsellorModel
 
-class SendMail:
-    def __init__(self, data):
-        self.data = data
-        self.sender = 'greviencevvit@gmail.com'
-        self.password = 'Saketh@4230'
+def SentOTP():
+    sender = 'greviencevvit@gmail.com'
+    password = 'pvhr wbrs tmbv rxty '
 
-    def setMail(self, receiver, subject, body):
-        mail = EmailMessage()
-        mail['From'] = self.sender
-        mail['To'] = receiver
-        mail['subject'] = subject
-        mail.set_content(body)
+    # std = StudentModel.objects.filter(registration=data['registration']).values()
 
-        context = ssl.create_default_context()
+    # counsellor = std[0]['counsellor']
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-            smtp.login(self.sender, self.password)
-            smtp.sendmail(self.sender, receiver, mail.as_string())
+    # mail = CounsellorModel.objects.filter(id = counsellor).values()[0]['email']
+    # print(data['email'])
+    receiver = "21bq1a4210@vvit.net"
 
-    def sendMail(self):
-        receiver = self.data['email']
-        subject = 'Your OTP Code'
-        body = self.data['otp']  # Assuming the OTP is passed in the data dictionary
-        self.setMail(receiver, subject, body)
+    subject = 'Your OTP'
 
-if __name__ == "__main__":
-    # Assuming 'data' contains the required information
-    data = {
-        # 'name': 'John Doe',
-        # 'year': '2nd',
-        # 'who': 'student',
-        # 'dept': 'CSE',
-        # 'reg_number': '123456',
-        'email': '21bq1a4210@vvit.net',
-        # 'type_of_grievance': 'Academic',
-        # 'complant': 'I have a concern about the course material.'
-    }
+    body = 'OTP: 12345'
 
-    # Create an instance of the SendMail class with 'data'
-    mail = SendMail(data)
-    print("mail send")
+    mail = EmailMessage()
+    mail['From'] = sender
+    mail['To'] = receiver
+    mail['subject'] = subject
+    mail.set_content(body)
+
+    context = ssl.create_default_context()
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(sender, password)
+        smtp.sendmail(sender, receiver, mail.as_string())
+
+if __name__ == '__main__':
+    SentOTP()
+    print('OTP send')
