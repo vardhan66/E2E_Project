@@ -18,56 +18,65 @@ def load_json_file(filename):
         file = json.load(f)
     return file
 
+def get_chatbot_response(chatbot, text, intents, label2id):
+    score = chatbot(text)[0]['score']
+    if score < 0.7:
+        return "Sorry, I can't answer that."
+    else:
+        label = chatbot(text)[0]['label']
+        label_id = label2id.get(label, None)
+        if label_id is None:
+            return "Sorry, I don't have an answer for that."
+        response = random.choice(intents['intents'][label_id].get('responses', ["Sorry, I don't have an answer for that."]))
+        return response
+
+# Initialize model and tokenizer
+model_path = "chatbot"
+model = BertForSequenceClassification.from_pretrained(model_path)
+tokenizer = BertTokenizerFast.from_pretrained(model_path)
+
+# Define the pipeline manually
+chatbot_pipeline = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
+
+# Load intents from JSON file
+filename = 'campus_qa.json'
+intents = load_json_file(filename)
+
+label2id = {
+    'greeting': 0, 'goodbye': 1, 'creator': 2, 'name': 3, 'hours': 4,
+    'number': 5, 'course': 6, 'fees': 7, 'location': 8, 'hostel': 9,
+    'event': 10, 'document': 11, 'floors': 12, 'syllabus': 13,
+    'library': 14, 'infrastructure': 15, 'canteen': 16, 'menu': 17,
+    'placement': 18, 'principal': 19, 'CSE': 20, 'CAI': 21, 'AIDS': 22,
+    'CSM': 23, 'ECE': 24, 'IOT': 25, 'EEE': 26, 'IT': 27, 'CIVIL': 28,
+    'Mechanical Engineering': 29, 'Chairman': 30, 'sem': 31,
+    'admission': 32, 'scholarship': 33, 'facilities': 34,
+    'Google CodeLabs': 35, 'University Innovation Fellows': 36,
+    'transport': 37, 'IUCEE': 38, 'SAC': 39, 'SAC SELECTIONS': 40,
+    'clubs': 41, 'NCC': 42, 'NSS': 43, 'sports': 44, 'uniform': 45,
+    'committee': 46, 'random': 47, 'swear': 48, 'vacation': 49,
+    'salutation': 50, 'task': 51, 'ragging': 52, 'hod': 53
+}
+
+def message(text):
+    response = get_chatbot_response(chatbot_pipeline, text, intents, label2id)
+    return response
+
 def chat(chatbot):
     print("Chatbot: Hi! I am your virtual assistant. Feel free to ask, and I'll do my best to provide you with answers and assistance.")
     print("Type 'quit' to exit the chat\n\n")
 
     text = input("User: ").strip().lower()
 
-    label2id = {
-        'greeting': 0, 'goodbye': 1, 'creator': 2, 'name': 3, 'hours': 4,
-        'number': 5, 'course': 6, 'fees': 7, 'location': 8, 'hostel': 9,
-        'event': 10, 'document': 11, 'floors': 12, 'syllabus': 13,
-        'library': 14, 'infrastructure': 15, 'canteen': 16, 'menu': 17,
-        'placement': 18, 'principal': 19, 'CSE': 20, 'CAI': 21, 'AIDS': 22,
-        'CSM': 23, 'ECE': 24, 'IOT': 25, 'EEE': 26, 'IT': 27, 'CIVIL': 28,
-        'Mechanical Engineering': 29, 'Chairman': 30, 'sem': 31,
-        'admission': 32, 'scholarship': 33, 'facilities': 34,
-        'Google CodeLabs': 35, 'University Innovation Fellows': 36,
-        'transport': 37, 'IUCEE': 38, 'SAC': 39, 'SAC SELECTIONS': 40,
-        'clubs': 41, 'NCC': 42, 'NSS': 43, 'sports': 44, 'uniform': 45,
-        'committee': 46, 'random': 47, 'swear': 48, 'vacation': 49,
-        'salutation': 50, 'task': 51, 'ragging': 52, 'hod': 53
-    }
-
     while text != 'quit':
-        score = chatbot(text)[0]['score']
-
-        if score < 0.7:
-            print("Chatbot: Sorry, I can't answer that.\n\n")
-        else:
-            label = label2id[chatbot(text)[0]['label']]
-            response = random.choice(intents['intents'][label].get('responses', ["Sorry, I don't have an answer for that."]))
-
-            print(f"Chatbot: {response}\n\n")
-
+        response = get_chatbot_response(chatbot, text, intents, label2id)
+        print(f"Chatbot: {response}\n\n")
         text = input("User: ").strip().lower()
 
 if __name__ == "__main__":
     print("PyTorch version:", torch.__version__)
     print("Transformers version:", transformers.__version__)
 
-    # Load model and tokenizer
-    model_path = "chatbot"
-    model = BertForSequenceClassification.from_pretrained(model_path)
-    tokenizer = BertTokenizerFast.from_pretrained(model_path)
-
-    # Define the pipeline manually
-    chatbot = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
-
-    # Load intents from JSON file
-    filename = 'campus_qa.json'
-    intents = load_json_file(filename)
-
-    # Start the chatbot
-    chat(chatbot)
+    # Start the chatbot in interactive mode
+    # chat(chatbot_pipeline)
+    print(message("tell me about vvit"))

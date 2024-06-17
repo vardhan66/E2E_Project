@@ -1,34 +1,17 @@
-from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from chatbot.chatbot_model.main import message
 
-# Create your views here.
-# from chatterbot import ChatBot
-# from chatterbot.trainers import ListTrainer
-# bot=ChatBot('VVIT chatbot',read_only=False,
-#             logic_adapters=[
-#                 {
-#                     'import_path':'chatterbot.logic.BestMatch',
-#                     'default_response':'Sorry,I dont know what you are asking for',
-#                     'maximim_similarity_threshold':0.90
-#                 }])
-# list_to_train=[
-#     "Hi",
-#     "Hi, there",
-#     "what's your name",
-#     "I'm VVIT Chatbot",
-#     "where is vvit located?",
-#     "VVIT is located in Nambur",
-#
-# ]
-#
-# list_trainer=ListTrainer(bot)
-# list_trainer.train(list_to_train)
+@csrf_exempt
+def chatbot_response(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_message = data.get('message', '').strip().lower()
+        if not user_message:
+            return JsonResponse({'response': "Sorry, I didn't understand that."})
 
-def index(request):
-    return render(request,'blog/index.html')
-def specific(request):
-    return HttpResponse("this is the specific url")
-def getResponse(request):
-    userMessage = request.GET.get('userMessage')
-    chatResponse = str(bot.get_response(userMessage))
-    return HttpResponse(chatResponse)
+        response = message(user_message)
+        return JsonResponse({'response': response})
+
+    return JsonResponse({'response': "Invalid request method."})
