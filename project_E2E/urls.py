@@ -22,6 +22,7 @@ urlpatterns = [
     path('', include('login.urls')),
     path('', include('signup.urls')),
     path('', include('forgotpassword.urls')),
-    path('',include('dashboard.urls')),
+    path('', include('dashboard.urls')),
+    path('', include('chatbot.urls')),
     path('admin/', admin.site.urls),
 ]
