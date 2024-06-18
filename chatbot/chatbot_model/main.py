@@ -3,7 +3,7 @@ import random
 import torch
 import torch.nn.functional as F
 import transformers
-from transformers import BertForSequenceClassification, BertTokenizerFast, pipeline
+from transformers import BertForSequenceClassification, BertTokenizerFast, pipeline, BertConfig
 
 # Custom upcast_masked_softmax function without dim argument
 def upcast_masked_softmax(x, mask, mask_value, scale, softmax_dtype):
@@ -32,7 +32,13 @@ def get_chatbot_response(chatbot, text, intents, label2id):
 
 # Initialize model and tokenizer
 model_path = "chatbot"
-model = BertForSequenceClassification.from_pretrained(model_path)
+# Load the configuration
+config = BertConfig.from_pretrained(model_path)
+
+# Load the model with the configuration
+model = BertForSequenceClassification.from_pretrained(model_path, config=config)
+
+# Load the tokenizer
 tokenizer = BertTokenizerFast.from_pretrained(model_path)
 
 # Define the pipeline manually
