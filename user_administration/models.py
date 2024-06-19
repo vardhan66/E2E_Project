@@ -128,7 +128,7 @@ class Student(models.Model):
         # Guard for student role
         if self.user.role_id != 'Student':
             raise ValidationError('The user not a Student')
-        student = Group.objects.get(name='student')
+        student = Group.objects.get(name='Student')
         self.user.groups.add(student)
 
     def __str__(self):

@@ -83,10 +83,10 @@ DATABASES = {
     'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'complaint_administration',
-            'USER': 'bhargavbunty',
+            'USER': 'postgres',
             'HOST': 'localhost',
             'PORT': '5432',
-            'PASSWORD': 'bhavana@2004'
+            'PASSWORD': 'admin'
     }
 }
 
