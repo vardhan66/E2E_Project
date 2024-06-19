@@ -3,7 +3,7 @@ from django.shortcuts import render
 from user_administration.escalation_models import EscalationStructure
 from complaint_administration.models.complaint_models import Complaint
 from complaint_administration.forms.complaint_forms import complaintRegistrationForm
-from django.contrib.postgres.search import SearchRank, SearchVector
+from django.contrib.postgres.search import SearchRank, SearchVector, SearchQuery, TrigramSimilarity
 from django.contrib.contenttypes.models import ContentType
 from django.apps import apps
 import json
@@ -71,8 +71,15 @@ def search(request):
     query = request.GET.get('query', '')
     vector = SearchVector('complaint_title', 'complaint_message', 'status',
                           'complaint_time', 'complaint_date', 'counsellor_complaints', 'complaint_id')
+    search_query = SearchQuery(query)
 
-    results = Complaint.objects.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.0001).order_by('-rank')
+    results = Complaint.objects.annotate(
+            similarity = SearchRank(vector, search_query) +
+            TrigramSimilarity('complaint_message', query) +
+            TrigramSimilarity('complaint_title', query) +
+            TrigramSimilarity('status', query)
+            ).filter(similarity__gte=0.0001).order_by('-similarity')
+    
     return render(request, 'complaint_administration/view_complaints.html', {'complaints': results})
 
 
@@ -90,7 +97,7 @@ def escalate_complaint(request):
             user_args[f'{next_escalation_level.student_relation_identifier}'] = getattr(user, f'{next_escalation_level.student_relation_identifier}_id')
             next_level_authority = apps.get_model(f'user_administration.{next_escalation_level.role}')
             print(next_level_authority)
-            next_level_authority_instance = next_level_authority.objects.filter(**user_args)
+            next_level_authority_instance = next_level_authority.objects.get(**user_args)
             if not next_level_authority_instance:
                 return HttpResponse('Complaint can\'t be escalated further')
             next_level_authority_content_type = ContentType.objects.get_for_model(next_level_authority_instance)
