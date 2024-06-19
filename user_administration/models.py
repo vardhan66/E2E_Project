@@ -121,7 +121,7 @@ class Student(models.Model):
     year = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)], editable=True)
     counsellor = models.ForeignKey(to=Counsellor, on_delete=models.CASCADE, blank=True, null=True)
     class_room = models.ForeignKey(Class, on_delete=models.CASCADE)
-    complaints = GenericRelation(Complaint, related_query_name='student')
+    complaints = GenericRelation(Complaint, related_query_name='Student')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
