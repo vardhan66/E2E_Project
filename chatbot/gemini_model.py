@@ -4,7 +4,6 @@ import google.generativeai as genai
 
 def chat(message):
     try:
-
         # GOOGLE_API_KEY=userdata.get('GOOGLE_API_KEY')
         genai.configure(api_key='AIzaSyAYcmEjIxxzDyq1N977tv0DabsJxUTubhY')
 
@@ -12,7 +11,13 @@ def chat(message):
 
         data = {
             'how can you assist/help / who are you': 'I am a chatbot I can give clarity on your questions reletaed to our college VVIT based on the my knowledge',
-            'Who build you/ tell me about you': 'I was build by the students of III-CSM-A',
+
+            'Name/ your name': 'AskVVIT',
+
+            'Who build you/ tell me about you/ who developed you/ who made you': 'I was build by the students of III-CSM-A',
+
+            'hi/hello/ wish like good morning, good afternoon, good evening': 'HI a chatbot build by the 3-csm-a students to assist you to provide information on our colllge',
+
             'About VVIT': '''Vasireddy Venkatadri Institute of Technology (VVIT) was established in the year 2007, with an intake of 240 students in four B. Tech programs under Social Educational Trust in Nambur village, Guntur, AP, by Er. Vasireddy Vidya Sagar. It is  located strategically between Guntur and Vijayawada in the capital region of Amaravati, AP. In a short span of 15 years, with an annual intake capacity of 1914 and 72 students into B.Tech (CE, EEE, ME, ECE, CSE, IT, CSM, CSO, CIC, AIM and AID) and M. Tech (CSE, VLSI&ES, PEED, MD, SE) programmes respectively, today more than  6000 students, 345 teaching staff and 225 non-teaching staff strive to fulfil the vision of VVIT.  
     
         In tune with the commitment, setting itself a benchmark as very best in terms of education, extracurricular activities and placements, VVIT has emerged as one of the top ten Engineering Colleges from the 200 engineering colleges affiliated to JNTU Kakinada. The subsequent years saw the inception of B.Tech & M.Tech programmes and signing of MoUs with Industry and Training & Placement Companies like Infosys, Tech Mahindra, Social Agro, Efftronics, AMCAT and Cocubes.  In 2014, VVIT was recognised as the nodal centre for skill development programmes of APSSDC, Govt. of AP.  The institute also has tie-ups with premier institutes like ISB to develop Entrepreneurial skills of the students.
@@ -41,8 +46,11 @@ def chat(message):
         Provide financial assistance to meritorious students.
         Requisition the services of the best HR managers to place our students in reputed industries.
         Provide conducive atmosphere to the faculty for Research & Development and ensure active participation of the students.''',
+
             'College fee/ fee structure': 'its better to visit our official site : https://www.vvitguntur.com/adm/adm-intake/',
+
             'College location': "Here is the college location on Google Maps: https://www.google.com/maps/place/Vasireddy+Venkatadri+Institute+of+Technology/@16.3471118,80.5286745,17z/data=!4m6!3m5!1s0x3a35f5c460ab7d1d:0x8c86e4f36490336b!8m2!3d16.3441622!4d80.524442!16s%2Fg%2F11bwfljsr8?entry=ttu",
+
             'Hostel': '''
                     Hostels
     
@@ -1425,8 +1433,20 @@ def chat(message):
         }
 
         question = message
-        response = model.generate_content(str(data) + "based on the data only and answer the question " + question)
-        return response.text
+
+        prompt = f"""
+                You are a helpful assistant with detailed knowledge about the following college data only:
+        {str(data)}
+
+        When users ask questions, your should answer them based on the information provided above only. Be as helpful and informative as possible.
+        
+        User: {question}
+        Assistant:
+        """
+
+        # response = model.generate_content(str(data) + "based on the data only and answer the question " + question)
+        response = model.generate_content(prompt)
+        return response.text.strip()
     except Exception as e:
         # Log the exception (optional) and return an error message
         print(f"An error occurred: {e}")

@@ -1,1 +1,3 @@
 chatbot/chatbot_model/chatbot/pytorch_model.bin
+*.pyc
+./**/*.pyc
