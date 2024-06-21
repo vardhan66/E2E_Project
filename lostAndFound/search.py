@@ -31,8 +31,10 @@ def SearchItems(data):
         # }
         values = list(results.values())
         if len(values) == 0:
-            return {"status" : False}
+            print(1)
+            return False
         else:
+            print(2)
             sendMailTo(item,values)
             return True
     elif type == 'found':

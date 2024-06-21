@@ -36,7 +36,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
+                console.log(data.status)
                 if(data.status){
                     document.getElementById('body').innerHTML = "Thank you for reaching out to us regarding your lost item.<strong> We are pleased to inform you that an item matching your description has been found.</strong>We have sent an email to the address you provided with the contact details of the person who found the item. <strong>Please check your inbox for this email,</strong> which includes the contact information and instructions on how to verify and retrieve your item directly from the finder."
                 }

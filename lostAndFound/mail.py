@@ -40,15 +40,16 @@ def sendMailTo(reporter,values):
     mail['subject'] = subject
     mail.add_attachment(MIMEText(html_content,'html'))
     context = ssl.create_default_context()
-    for idx, image_path in enumerate(image_paths):
-        with open(image_path, 'rb') as image_file:
-            image_data = image_file.read()
-            image_name = image_path.split('/')[-1]
-            image_cid = f'image{idx + 1}'
-            mime_image = MIMEImage(image_data, name=image_name)
-            mime_image.add_header('Content-ID', f'<{image_cid}>')
-            mime_image.add_header('Content-Disposition', 'inline', filename=image_name)
-            mail.add_attachment(mime_image)
+    if len(image_paths) != 0:
+        for idx, image_path in enumerate(image_paths):
+            with open(image_path, 'rb') as image_file:
+                image_data = image_file.read()
+                image_name = image_path.split('/')[-1]
+                image_cid = f'image{idx + 1}'
+                mime_image = MIMEImage(image_data, name=image_name)
+                mime_image.add_header('Content-ID', f'<{image_cid}>')
+                mime_image.add_header('Content-Disposition', 'inline', filename=image_name)
+                mail.add_attachment(mime_image)
 
     with smtplib.SMTP_SSL('smtp.gmail.com',465, context=context) as smtp:
         smtp.login(sender,password)
