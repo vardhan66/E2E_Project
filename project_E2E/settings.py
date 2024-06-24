@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,9 @@ SECRET_KEY = 'django-insecure-x*z!^+&&ym!&f$6d^2+nr_l5u4#f++9i@hk+oe(#s6k6avo-gb
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 
 # Application definition
@@ -44,6 +48,7 @@ INSTALLED_APPS = [
     'forgotpassword.apps.ForgotpasswordConfig',
     'dashboard.apps.DashboardConfig',
     'complaintbox.apps.ComplaintboxConfig',
+    'lostAndFound.apps.LostandfoundConfig'
 ]
 
 MIDDLEWARE = [
@@ -90,11 +95,27 @@ WSGI_APPLICATION = 'project_E2E.wsgi.application'
 # 	}
 # }
 
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.mysql',
+# 		'NAME': 'project_E2E',
+# 		'USER': 'root',
+# 		'PASSWORD': 'sarath',
+# 		'HOST':'localhost',
+# 	}
+# }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'project_e2e',
-        'USER': 'postgres',
+        'USER': 'admin',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '5432',
